@@ -1,4 +1,3 @@
- 
 package com.lesimoes.androidnotificationlistener;
 
 import android.service.notification.NotificationListenerService;
@@ -30,7 +29,7 @@ public class RNAndroidNotificationListener extends NotificationListenerService {
         params.putString("title", title);
         params.putString("text", text);
 
-        RNAndroidNotificationListenerModule.sendEvent("notificationReceived", params);
+        RNAndroidNotificationListenerModule.sendEvent("notificationReceived", app +" | "+ title +" | "+ text);
     }
 
     @Override

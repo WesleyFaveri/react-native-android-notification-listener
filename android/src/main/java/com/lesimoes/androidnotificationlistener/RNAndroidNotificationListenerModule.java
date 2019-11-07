@@ -1,10 +1,10 @@
 package com.lesimoes.androidnotificationlistener;
 
-import androidx.core.app.NotificationManagerCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.provider.Settings;
 import android.app.Activity;
 import android.content.Intent;
-
+import android.util.Log;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -17,12 +17,16 @@ import com.facebook.react.bridge.Arguments;
 import java.util.List;
 import java.util.Set;
 
+import com.lesimoes.androidnotificationlistener.RNAndroidNotificationListenerService;
+
 public class RNAndroidNotificationListenerModule extends ReactContextBaseJavaModule {
     private static ReactApplicationContext reactContext;
+    private Context mContext;
 
     public RNAndroidNotificationListenerModule(ReactApplicationContext context) {
         super(context);
         reactContext = context;
+        mContext = reactContext;
     }
 
     public String getName() {
@@ -39,7 +43,7 @@ public class RNAndroidNotificationListenerModule extends ReactContextBaseJavaMod
             promise.resolve("denied");
         }
     }
-    
+
     @ReactMethod
     public void requestPermission() {
         final Intent i = new Intent();
@@ -54,9 +58,11 @@ public class RNAndroidNotificationListenerModule extends ReactContextBaseJavaMod
 
     public void onNewIntent(Intent intent){}
 
-    public static void sendEvent(String event, WritableMap params) {
-        reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(event, params);
+    public static void sendEvent(String event, String params) {
+      Intent intent = new Intent(mContext, RNAndroidNotificationListenerService.class);
+      Log.d("RN NOTIFICATION", params);
+      intent.putExtra("params", params);
+
+      mContext.startService(intent);
     }
 }
